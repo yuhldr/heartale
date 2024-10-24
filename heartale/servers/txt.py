@@ -39,6 +39,7 @@ class TxtServer(Server):
 
         self.path_file = self.conf[PATH_FILE]
         print(f"文件位置：{self.path_file}")
+        os.makedirs(f"{PATH_CONFIG_DIR}/txts/", True)
 
         if not os.path.exists(self.path_file):
             self.txts, self.p2s, self.txt_n = ["请检查设置的文件路径是否正确"], [0], 0

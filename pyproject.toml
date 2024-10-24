@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heartale"
+version = "0.0.1"
+description = "听书"
+readme = "readme.md"
+authors = [{ name = "yuhldr", email = "yuhldr@qq.com" }]
+dependencies = [
+    "edge_tts >= 6.1.13",
+    "azure-cognitiveservices-speech >= 1.41.1",
+]
+
+# 包含的脚本
+[project.scripts]
+heartale_count = "heartale.tools.count:count_read_time"
+heartale = "heartale:run_play"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["heartale*"]

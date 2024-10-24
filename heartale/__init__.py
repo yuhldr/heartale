@@ -62,7 +62,7 @@ def print_test(i, chap, text, file):
         text (_type_): _description_
         file (_type_): _description_
     """
-    print(f"\n\n*** {i}/{chap} ***")
+    print(f"*** {i}/{chap} ***")
     print(file)
     if len(text) > 20:
         print(f"{text[:20]} ...")
@@ -70,7 +70,7 @@ def print_test(i, chap, text, file):
         print(text[:20])
 
 
-async def main(chap=1000, play_min=100):
+async def play(chap=1000, play_min=100):
     """主函数，两个条件只要满足一个就停止
 
     Args:
@@ -83,6 +83,7 @@ async def main(chap=1000, play_min=100):
 
     # 本次阅读开始时间
     date_key = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"开始时间：{date_key}")
     # 每次阅读多久
     read_time_data = {
         "word": [],
@@ -93,10 +94,13 @@ async def main(chap=1000, play_min=100):
 
     conf = get_config()
     tts = get_tts(conf)
-    lg = get_server(conf)
+    server = get_server(conf)
+
+    print(f"初始化完成：tts:{tts.key}, txt:{server.key}")
+    print("下载中，请稍等……")
 
     # 下载和播放章节
-    text = await lg.initialize()
+    text = await server.initialize()
     mp3_file = f'{get_cache_mp3(f"{time.time()}")}.mp3'
     await tts.download(text, mp3_file)
 
@@ -109,19 +113,24 @@ async def main(chap=1000, play_min=100):
 
         read_time_data["time"].append(round(time.time() - st, 2))
         read_time_data["word"].append(len(text))
-        save_read_time(date_key, read_time_data, lg.book_name)
+        save_read_time(date_key, read_time_data, server.book_name)
         st = time.time()
 
         # 并行播放和下载任务
         task_play = play_mp3(mp3_file, conf)
 
-        text = await lg.next()
+        text = await server.next()
         print_test(_i, chap, text, mp3_file)
 
         mp3_file = f'{get_cache_mp3(f"{time.time()}")}.mp3'
         task_download = tts.download(text, mp3_file)
 
         await asyncio.gather(task_play, task_download)
+
+
+def run_play():
+    """运行主函数"""
+    asyncio.run(play())
 
 
 async def test_play():

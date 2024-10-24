@@ -94,7 +94,7 @@ def count_read_time():
         s += f"总阅读时间：{format_time(data['read_time'])}"
         s += f"，总阅读字数：{data['read_word']}个"
         for day, d in data["days"].items():
-            s += f"\n{day}，阅读时间：{format_time(d["read_time"])}"
-            s += f"，阅读字数：{d["read_word"]}个"
+            s += f"\n{day}，阅读时间：{format_time(d['read_time'])}"
+            s += f"，阅读字数：{d['read_word']}个"
         print(s)
     print("\n******\n总阅读时间：", format_time(t))

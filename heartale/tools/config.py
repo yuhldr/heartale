@@ -14,7 +14,7 @@ CONFIG_DATA = None
 DEFAULT_CONFIG = {
     "version": 1,
     "server": {
-        "key": "legado",
+        "key": "txt",
         "legado": {
             "ip": "192.168.1.6",
             "port": "1122"
