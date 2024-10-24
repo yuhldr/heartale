@@ -5,8 +5,8 @@ import time
 
 import aiohttp
 
-from servers import Server
-from tools import data2url, split_text
+from heartale.servers import Server
+from heartale.tools import data2url, split_text
 
 # 常量定义
 CHAP_POS = "durChapterPos"

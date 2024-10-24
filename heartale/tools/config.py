@@ -1,7 +1,7 @@
 """配置"""
 import os
 
-from tools import get_data, save_data
+from heartale.tools import get_data, save_data
 
 PATH_CONFIG_DIR = f'{os.getenv("HOME")}/.config/bpy/'
 if not os.path.exists(PATH_CONFIG_DIR):

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name[zh_CN]=听书
+Name=heartale
+Exec=heartale %u
+Icon=cool.ldr.heartale
+Terminal=false
+Type=Application
+Categories=Audio;
+StartupNotify=true

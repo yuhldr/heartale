@@ -3,7 +3,7 @@
 
 import azure.cognitiveservices.speech as speechsdk
 
-from tts import TTS
+from heartale.tts import TTS
 
 
 class AzureTTS(TTS):

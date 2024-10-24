@@ -1,6 +1,0 @@
-#!/usr/bin/bash
-
-# 获取脚本所在的目录（即使软链接，也还原原本地址）
-dir_this=$(dirname "$(readlink -f "$0")")
-
-cd "$dir_this" && python3 main.py

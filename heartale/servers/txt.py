@@ -2,9 +2,9 @@
 import os
 import pathlib
 
-from servers import Server
-from tools import cal_file_md5, get_data, save_data, split_text
-from tools.config import PATH_CONFIG_DIR
+from heartale.servers import Server
+from heartale.tools import cal_file_md5, get_data, save_data, split_text
+from heartale.tools.config import PATH_CONFIG_DIR
 
 PATH_FILE = "path_file"
 KEY_POS = "pos"

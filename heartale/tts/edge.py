@@ -2,7 +2,7 @@
 
 import edge_tts
 
-from tts import TTS
+from heartale.tts import TTS
 
 
 class EdgeTTS(TTS):

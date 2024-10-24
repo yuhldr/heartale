@@ -3,12 +3,13 @@ import asyncio
 import time
 from datetime import datetime
 
-from servers import Server
-from tools.cache import get_cache_mp3, rm_cache_mp3
-from tools.config import get_config, get_config_server, get_config_tts_download
-from tools.constant import get_servers, get_ttses
-from tools.read import save_read_time
-from tts import TTS, play_mp3
+from heartale.servers import Server
+from heartale.tools.cache import get_cache_mp3, rm_cache_mp3
+from heartale.tools.config import (get_config, get_config_server,
+                                   get_config_tts_download)
+from heartale.tools.constant import get_servers, get_ttses
+from heartale.tools.count import save_read_time
+from heartale.tts import TTS, play_mp3
 
 
 def get_server(conf_all) -> Server:
@@ -131,8 +132,3 @@ async def test_play():
 
     await get_tts(conf).download(txt, file)
     await play_mp3(file, conf)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
-    # asyncio.run(test_play())
