@@ -20,7 +20,7 @@
 
 > 只需配置一次
 
-1. 下载并安装 `heartale.whl`
+1. [这里](https://github.com/yuhldr/heartale/releases/tag/beta)下载并安装 `heartale*.whl`
 
    尽量用 linux，windows 系统可以用 `WSL`，什么意思，自己百度吧
 
