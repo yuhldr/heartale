@@ -87,7 +87,9 @@ def count_read_time():
 
     print(list(book_names.keys()))
 
+    t = 0
     for book_name, data in book_names.items():
+        t += data['read_time']
         s = f"\n***** {book_name} *****\n"
         s += f"总阅读时间：{format_time(data['read_time'])}"
         s += f"，总阅读字数：{data['read_word']}个"
@@ -95,3 +97,4 @@ def count_read_time():
             s += f"\n{day}，阅读时间：{format_time(d["read_time"])}"
             s += f"，阅读字数：{d["read_word"]}个"
         print(s)
+    print("\n******\n总阅读时间：", format_time(t))
