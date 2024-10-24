@@ -131,13 +131,3 @@ async def play(chap=1000, play_min=100):
 def run_play():
     """运行主函数"""
     asyncio.run(play())
-
-
-async def test_play():
-    """测试tts和mpv播放音频"""
-    txt = "恭喜！配置成功！快打开阅读app，并修改ip地址吧！"
-    file = "test.webm"
-    conf = get_config()
-
-    await get_tts(conf).download(txt, file)
-    await play_mp3(file, conf)

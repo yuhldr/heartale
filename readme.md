@@ -22,29 +22,9 @@
 
 1. [这里](https://github.com/yuhldr/heartale/releases/tag/beta)下载并安装 `heartale*.whl`
 
-   尽量用 linux，windows 系统可以用 `WSL`，什么意思，自己百度吧
+   非 linux 系统可能需要设置播放程序，看最后详细说明
 
-2. 播放程序设置
-
-   目前测试了 `mpv` 和 `ffmpeg`，两个都行，默认 `ffmpeg`
-
-   我用的 linux，比如
-
-   ubuntu
-
-   ```bash
-   sudo apt install ffmpeg
-   ```
-
-   archlinux
-
-   ```bash
-   sudo pacman -S ffmpeg
-   ```
-
-   其他的自己想办法
-
-3. 测试是否修改成功
+2. 测试是否修改成功
 
    终端输入
 
@@ -55,6 +35,15 @@
    如果听到 "test，配置成功"，说明没问题
 
 ### 朗读类型
+
+默认 `txt`，设置中
+
+```json
+"server": {
+    "key": "txt",
+...
+}
+```
 
 #### 本地 txt 文件
 
@@ -84,6 +73,15 @@
    ```
 
    里面的 `192.168.1.6` 改成刚才你看到的 `ip`，端口 `1122` 一般不用改
+
+3. 修改如下内容中的 `txt` 为 `legado`
+
+   ```json
+   "server": {
+       "key": "txt",
+   ...
+   }
+   ```
 
 ### 运行
 
@@ -118,7 +116,7 @@ heartale
   },
   "tts": {
     "play": {
-      "code": ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet"]
+      "code": ["paplay"]
     },
     "download": {
       "key": "edge",
@@ -138,7 +136,45 @@ heartale
 }
 ```
 
-其中
+### 音频播放程序
+
+默认针对 linux，使用 `paplay`，资源消耗极小
+
+```json
+"tts": {
+    "play": {
+        "code": [
+            "paplay"
+        ]
+    },
+...
+}
+```
+
+可以用 ffmpeg
+
+```json
+"tts": {
+    "play": {
+        "code": ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet"]
+    },
+    ...
+}
+```
+
+也可以用 `mpv`
+
+```json
+
+"tts": {
+    "play": {
+        "code": ["mpv"]
+    },
+    ...
+}
+```
+
+#### TTS 转语音
 
 - tts-edge
 
