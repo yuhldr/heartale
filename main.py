@@ -103,7 +103,7 @@ async def main(chap=1000, play_min=100):
     for _i in range(chap):
         # 默认播放100分钟，一段结束再停止
         if sum(read_time_data["time"]) > play_min * 60:
-            print(f"阅读{(sum(read_time_data["time"]))/60} > {play_min}分钟")
+            print(f'阅读{(sum(read_time_data["time"]))/60} > {play_min}分钟')
             break
 
         read_time_data["time"].append(round(time.time() - st, 2))
