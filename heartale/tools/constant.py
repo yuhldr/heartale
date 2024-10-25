@@ -4,6 +4,7 @@ from heartale.servers.legado import LegadoServer
 from heartale.servers.txt import TxtServer
 from heartale.tts import TTS
 from heartale.tts.edge import EdgeTTS
+from heartale.tts.g_tts import GTTS
 from heartale.tts.ms_azure import AzureTTS
 
 
@@ -30,4 +31,5 @@ def get_ttses() -> list[TTS]:
     return [
         EdgeTTS(),
         AzureTTS(),
+        GTTS(),
     ]

@@ -45,6 +45,9 @@ DEFAULT_CONFIG = {
                 "language": "zh-CN",
                 "voice": "zh-CN-XiaoxiaoNeural",
                 "rate": "+30%"
+            },
+            "gtts": {
+                "language": "zh-CN"
             }
         }
     }
