@@ -48,6 +48,9 @@ DEFAULT_CONFIG = {
             },
             "gtts": {
                 "language": "zh-CN"
+            },
+            "coqui": {
+                "model": "tts_models/zh-CN/baker/tacotron2-DDC-GST"
             }
         }
     }
