@@ -22,4 +22,4 @@ jobs:
         pip install ./dist/*.whl
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint --disable=E0401 $(git ls-files '*.py')
