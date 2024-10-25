@@ -1,6 +1,5 @@
 """不推荐，很机器人"""
 
-from gtts import gTTS
 
 from heartale.tts import TTS
 
@@ -25,4 +24,6 @@ class GTTS(TTS):
             text (str): 文本
             file (str): 保存的音频文件
         """
+        from gtts import gTTS  # pylint: disable=C0415
+
         gTTS(text, lang=self.conf['language']).save(file)

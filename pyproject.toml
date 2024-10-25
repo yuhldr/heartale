@@ -10,7 +10,7 @@ readme = "readme.md"
 authors = [{ name = "yuhldr", email = "yuhldr@qq.com" }]
 dependencies = [
     "edge_tts >= 6.1.13",
-    "azure-cognitiveservices-speech >= 1.41.1",
+    # "azure-cognitiveservices-speech >= 1.41.1",
 ]
 
 # 包含的脚本

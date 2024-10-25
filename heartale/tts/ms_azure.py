@@ -1,8 +1,6 @@
 '申请github学生包，然后去微软官网申请，可以免费用一年'
 # https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts
 
-import azure.cognitiveservices.speech as speechsdk
-
 from heartale.tts import TTS
 
 
@@ -32,6 +30,8 @@ class AzureTTS(TTS):
         if len(self.conf["key"]) == 0:
             print("请在配置文件中填写Azure的key")
             return "请在配置文件中填写Azure的key"
+
+        import azure.cognitiveservices.speech as speechsdk  # pylint: disable=C0415
 
         speech_config = speechsdk.SpeechConfig(
             subscription=self.conf["key"], region=self.conf["region"])

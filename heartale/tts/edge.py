@@ -1,6 +1,5 @@
 """文本转语音文件"""
 
-import edge_tts
 
 from heartale.tts import TTS
 
@@ -25,6 +24,8 @@ class EdgeTTS(TTS):
             text (str): 文本
             file (str): 保存的音频文件
         """
+        import edge_tts  # pylint: disable=C0415
+
         communicate = edge_tts.Communicate(
             text, self.conf["voice"], rate=self.conf["rate"])
         await communicate.save(file)

@@ -1,7 +1,5 @@
 """转中文有些问题，容易跳词"""
 
-import torch
-from TTS.api import TTS as Ctts
 
 from heartale.tts import TTS
 
@@ -27,6 +25,9 @@ class CoquiTTS(TTS):
             file (str): 保存的音频文件
         """
         if self.tts is None:
+            import torch  # pylint: disable=C0415
+            from TTS.api import TTS as Ctts  # pylint: disable=C0415
+
             device = "cuda" if torch.cuda.is_available() else "cpu"
             print(f"Using {device} for TTS")
             self.tts = Ctts(self.conf["model"]).to(device)
