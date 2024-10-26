@@ -18,11 +18,5 @@ class EdgeTTS(TTS):
         self.communicate = edge_tts.Communicate
 
     async def download(self, text, file):
-        """异步文本转音频，并保存本地
-
-        Args:
-            text (str): 文本
-            file (str): 保存的音频文件
-        """
         await self.communicate(
             text, self.conf["voice"], rate=self.conf["rate"]).save(file)

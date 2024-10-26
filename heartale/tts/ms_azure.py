@@ -30,17 +30,6 @@ class AzureTTS(TTS):
         self.sc = speechsdk.SpeechConfig(self.conf["key"], self.conf["region"])
 
     async def download(self, text, file):
-        """_summary_
-
-        Args:
-            text (str): _description_
-            file (str): _description_
-
-        Returns:
-            bool: _description_
-        """
-
-        # 使用SSML设置语音速度
         ssml_text = f"""
         <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
             xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="{self.conf['language']}">

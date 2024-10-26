@@ -27,10 +27,4 @@ class CoquiTTS(TTS):
         self.tts = Ctts(self.conf["model"]).to(device)
 
     async def download(self, text, file):
-        """异步文本转音频，并保存本地
-
-        Args:
-            text (str): 文本
-            file (str): 保存的音频文件
-        """
         self.tts.tts_to_file(text=text, file_path=file)
