@@ -17,8 +17,8 @@ class CoquiTTS(TTS):
         self.tts = None
         super().__init__("coqui")
 
-    def set_conf(self, conf):
-        super().set_conf(conf)
+    def set_conf(self, conf, py_libs=None):
+        super().set_conf(conf, ["torch", "TTS"])
         import torch  # pylint: disable=C0415
         from TTS.api import TTS as Ctts  # pylint: disable=C0415
 

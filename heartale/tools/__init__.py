@@ -106,3 +106,19 @@ def get_data(file_path, data_defaul=None):
 
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def check_library_installed(library_name):
+    """某个库是否被安装
+
+    Args:
+        library_name (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    try:
+        __import__(library_name)
+        return True
+    except ImportError:
+        return False

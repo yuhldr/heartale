@@ -9,17 +9,12 @@ class GTTS(TTS):
     """
 
     def __init__(self):
-        """_summary_
-
-        Args:
-            key (str): 用于配置中区分使用本地什么服务
-        """
         self.gtts = None
 
         super().__init__("gtts")
 
-    def set_conf(self, conf):
-        super().set_conf(conf)
+    def set_conf(self, conf, py_libs=None):
+        super().set_conf(conf, ["gtts"])
 
         from gtts import gTTS  # pylint: disable=C0415
         self.gtts = gTTS

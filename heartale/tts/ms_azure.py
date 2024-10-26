@@ -9,19 +9,14 @@ class AzureTTS(TTS):
     """
 
     def __init__(self):
-        """_summary_
-
-        Args:
-            key (str): 用于配置中区分使用本地什么服务
-        """
         self.sc = None
         self.aoc = None
         self.ss = None
         self.rs = None
         super().__init__("azure")
 
-    def set_conf(self, conf):
-        super().set_conf(conf)
+    def set_conf(self, conf, py_libs=None):
+        super().set_conf(conf, ["azure.cognitiveservices.speech"])
 
         if len(self.conf["key"]) == 0:
             raise ValueError("请在配置文件中填写Azure的key")
