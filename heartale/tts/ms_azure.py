@@ -14,7 +14,25 @@ class AzureTTS(TTS):
         Args:
             key (str): 用于配置中区分使用本地什么服务
         """
+        self.sc = None
+        self.aoc = None
+        self.ss = None
+        self.rs = None
         super().__init__("azure")
+
+    def set_conf(self, conf):
+        super().set_conf(conf)
+
+        if len(self.conf["key"]) == 0:
+            raise ValueError("请在配置文件中填写Azure的key")
+        # pylint: disable=C0415
+        import azure.cognitiveservices.speech as speechsdk
+
+        self.aoc = speechsdk.audio.AudioOutputConfig
+        self.ss = speechsdk.SpeechSynthesizer
+        self.rs = speechsdk.ResultReason.SynthesizingAudioCompleted
+
+        self.sc = speechsdk.SpeechConfig(self.conf["key"], self.conf["region"])
 
     async def download(self, text, file):
         """_summary_
@@ -27,19 +45,6 @@ class AzureTTS(TTS):
             bool: _description_
         """
 
-        if len(self.conf["key"]) == 0:
-            print("请在配置文件中填写Azure的key")
-            return "请在配置文件中填写Azure的key"
-
-        import azure.cognitiveservices.speech as speechsdk  # pylint: disable=C0415
-
-        speech_config = speechsdk.SpeechConfig(
-            subscription=self.conf["key"], region=self.conf["region"])
-
-        audio_config = speechsdk.audio.AudioOutputConfig(filename=file)
-        speech_synthesizer = speechsdk.SpeechSynthesizer(
-            speech_config=speech_config, audio_config=audio_config)
-
         # 使用SSML设置语音速度
         ssml_text = f"""
         <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
@@ -51,8 +56,10 @@ class AzureTTS(TTS):
             </voice>
         </speak>
         """
-        result = speech_synthesizer.speak_ssml_async(ssml_text).get()
-        if result.reason != speechsdk.ResultReason.SynthesizingAudioCompleted:
+
+        result = self.ss(self.sc, self.aoc(file))\
+            .speak_ssml_async(ssml_text).get()
+        if result.reason != self.rs:
             print(f"Speech synthesis failed: {result.reason}")
             raise ValueError(f"Speech synthesis failed: {result.reason}")
 

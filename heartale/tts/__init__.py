@@ -21,7 +21,11 @@ class TTS:
         self.conf = None
 
     def set_conf(self, conf):
-        """设置配置信息"""
+        """设置配置信息，并可以初始化一些服务，比如import第三方库，防止未使用的TTS导致内存占用过大
+
+        Args:
+            conf (_type_): _description_
+        """
         self.conf = conf
 
     async def download(self, text, file):

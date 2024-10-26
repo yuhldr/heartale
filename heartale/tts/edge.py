@@ -14,8 +14,18 @@ class EdgeTTS(TTS):
         Args:
             key (str): 用于配置中区分使用本地什么服务
         """
-
+        self.communicate = None
         super().__init__("edge")
+
+    def set_conf(self, conf):
+        """设置配置
+
+        Args:
+            conf (dict): 配置
+        """
+        super().set_conf(conf)
+        import edge_tts  # pylint: disable=C0415
+        self.communicate = edge_tts.Communicate
 
     async def download(self, text, file):
         """异步文本转音频，并保存本地
@@ -24,8 +34,5 @@ class EdgeTTS(TTS):
             text (str): 文本
             file (str): 保存的音频文件
         """
-        import edge_tts  # pylint: disable=C0415
-
-        communicate = edge_tts.Communicate(
-            text, self.conf["voice"], rate=self.conf["rate"])
-        await communicate.save(file)
+        await self.communicate(
+            text, self.conf["voice"], rate=self.conf["rate"]).save(file)
