@@ -52,7 +52,8 @@ DEFAULT_CONFIG = {
             },
             "coqui": {
                 "model": "tts_models/zh-CN/baker/tacotron2-DDC-GST"
-            }
+            },
+            "paddlespeech":{},
         }
     }
 }
