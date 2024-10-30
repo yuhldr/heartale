@@ -36,9 +36,9 @@ class BookData():
         self.chap_n0 = chap_n
         self.chap_n = self.chap_n0
 
-        self.chap_names = chap_names[self.chap_n:200]
+        self.chap_names = chap_names[self.chap_n:200+self.chap_n]
         if chap_p2s is not None:
-            self.chap_p2s = chap_p2s[self.chap_n:200]
+            self.chap_p2s = chap_p2s[self.chap_n:200+self.chap_n]
         else:
             self.chap_p2s = None
 
