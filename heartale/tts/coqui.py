@@ -1,6 +1,8 @@
 """转中文有些问题，容易跳词"""
 
 
+import re
+
 from heartale.tts import TTS
 
 
@@ -27,4 +29,10 @@ class CoquiTTS(TTS):
         self.tts = Ctts(self.conf["model"]).to(device)
 
     async def download(self, text, file):
+
+        text = re.sub(r'[“”]', '', text)
+        text = re.sub(r'[…？！\n]', '。', text)
+        if text[-1] != "。":
+            text += "。"
+
         self.tts.tts_to_file(text=text, file_path=file)
