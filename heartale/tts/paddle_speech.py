@@ -14,7 +14,7 @@ class PaddleSpeechTTS(TTS):
 
     def set_conf(self, conf, py_libs=None):
         super().set_conf(conf, ["paddlespeech"])
-        # pylint: disable=C0401
+        # pylint: disable=C0415
         from paddlespeech.cli.tts.infer import TTSExecutor
         self.tts = TTSExecutor()
 
