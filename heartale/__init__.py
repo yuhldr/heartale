@@ -1,5 +1,6 @@
 """主文件"""
 import asyncio
+import os
 import time
 from datetime import datetime
 
@@ -65,7 +66,7 @@ def print_test(i, chap, text, file):
     print(f"*** {i}/{chap} ***")
     print(file)
     if len(text) > 20:
-        print(f"{text[:20]} ...")
+        print(f"{text[:20]} ... {len(text)}")
     else:
         print(text[:20])
 
@@ -93,6 +94,14 @@ async def play(chap=1000, play_min=100):
     rm_cache_mp3()
 
     conf = get_config()
+    proxy_url = conf.get("proxy_url", "")
+
+    if len(proxy_url) > 0:
+        print(proxy_url)
+        # 设置环境变量
+        os.environ['http_proxy'] = proxy_url
+        os.environ['https_proxy'] = proxy_url
+
     tts = get_tts(conf)
     server = get_server(conf)
 
@@ -106,7 +115,6 @@ async def play(chap=1000, play_min=100):
 
     # 默认听100章节，自动停止
     for _i in range(chap):
-        print("\n\n")
         # 默认播放100分钟，一段结束再停止
         if sum(read_time_data["time"]) > play_min * 60:
             print(f'阅读{(sum(read_time_data["time"]))/60} > {play_min}分钟')

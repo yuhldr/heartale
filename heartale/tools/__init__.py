@@ -190,3 +190,19 @@ def parse_volumes_and_chapters(file_content, chap_n):
             chap_content += line + "\n"
 
     return chap_names, p2s, chap_content
+
+
+def get_proxy_url():
+    """获取代理地址
+
+    Returns:
+        str: 代理地址，如果没有设置代理则返回 None
+    """
+    http_p = os.getenv("http_proxy")
+    if http_p:
+        return http_p
+    https_p = os.getenv("https_proxy")
+    if https_p:
+        return https_p
+
+    return None

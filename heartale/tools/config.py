@@ -13,6 +13,7 @@ CONFIG_DATA = None
 
 DEFAULT_CONFIG = {
     "version": 1,
+    "proxy_url": "",
     "server": {
         "key": "txt",
         "legado": {
