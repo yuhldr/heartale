@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import re
 import time
 import urllib
 
@@ -122,3 +123,70 @@ def check_library_installed(library_name):
         return True
     except ImportError:
         return False
+
+
+def detect_encoding(file_path):
+    """
+    Detect the encoding of a given file by attempting to read it with different encodings.
+
+    Args:
+        file_path (str): The path to the file whose encoding is to be detected.
+
+    Returns:
+        str: The detected encoding if successful, otherwise None.
+    """
+
+    encodings = ['utf-8', 'gbk', 'gb2312', 'big5']
+    for encoding in encodings:
+        try:
+            with open(file_path, 'r', encoding=encoding) as file:
+                file.read()
+            return encoding
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+
+    return None  # 未能检测到编码
+
+
+def parse_volumes_and_chapters(file_content, chap_n):
+    """匹配 "第xx卷" 和 "第xx章"
+
+    Args:
+        file_content (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    # 匹配 "第xx卷" 和 "第xx章"
+    volume_pattern = r'^第([一二三四五六七八九十\d]+)卷\s*(.*)'  # 匹配卷号
+    chapter_pattern = r'^第(\d+)章\s*(.*)'  # 匹配章号
+
+    current_volume = None
+    chap_names = []
+    p2s = []
+    chap_content = ""
+
+    # 按行解析文本
+    # print(file_content)
+    ss = file_content.split("\n")
+    words = 0
+    for line in ss:
+        words += len(line + "\n")
+        # 匹配卷号
+        volume_match = re.search(volume_pattern, line)
+        if volume_match:
+            current_volume = volume_match.group()  # 获取当前卷
+            continue  # 继续找章
+
+        # 匹配章号
+        chapter_match = re.search(chapter_pattern, line)
+        if chapter_match and current_volume:
+            current_chapter = chapter_match.group()
+            chap_names.append(f"{current_volume} {current_chapter}")
+            p2s.append(words)
+
+        if len(p2s) == chap_n:
+            chap_content += line + "\n"
+
+    return chap_names, p2s, chap_content

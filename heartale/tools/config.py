@@ -3,9 +3,9 @@ import os
 
 from heartale.tools import get_data, save_data
 
-PATH_CONFIG_DIR = f'{os.getenv("HOME")}/.config/bpy/'
-if not os.path.exists(PATH_CONFIG_DIR):
-    os.mkdir(PATH_CONFIG_DIR)
+PATH_CONFIG_DIR = f'{os.getenv("HOME")}/.config/heartale/'
+os.makedirs(PATH_CONFIG_DIR, exist_ok=True)
+
 PATH_CONFIG = f'{PATH_CONFIG_DIR}/config.json'
 
 CONFIG_DATA = None
@@ -20,7 +20,8 @@ DEFAULT_CONFIG = {
             "port": "1122"
         },
         "txt": {
-            "path_file": "/tmp/test.txt"
+            "path_file": "/tmp/test.txt",
+            "encoding": ""
         }
     },
     "tts": {

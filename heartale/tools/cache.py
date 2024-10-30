@@ -13,8 +13,7 @@ def get_cache_path():
     return os.getenv("HOME") + "/.cache/bpy/"
 
 
-if not os.path.exists(get_cache_path()):
-    os.mkdir(get_cache_path())
+os.makedirs(get_cache_path(), exist_ok=True)
 
 
 def get_cache_mp3(file):
@@ -29,8 +28,7 @@ def get_cache_mp3(file):
     return f"{get_cache_path()}/mp3/{file}"
 
 
-if not os.path.exists(get_cache_mp3("")):
-    os.mkdir(get_cache_mp3(""))
+os.makedirs(get_cache_mp3(""), exist_ok=True)
 
 
 def rm_cache_mp3():

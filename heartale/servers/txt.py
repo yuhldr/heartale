@@ -1,13 +1,20 @@
 """阅读本地txt文件"""
 import os
 import pathlib
+from datetime import datetime
 
-from heartale.servers import Server
-from heartale.tools import cal_file_md5, get_data, save_data, split_text
+from heartale.servers import BookData, Server
+from heartale.tools import (cal_file_md5, detect_encoding, get_data,
+                            parse_volumes_and_chapters, save_data)
 from heartale.tools.config import PATH_CONFIG_DIR
 
 PATH_FILE = "path_file"
-KEY_POS = "pos"
+# 第几章
+KEY_CHAP_N = "chap_n"
+# 这一章第几个字
+KEY_CHAP_TXT_POS = "chap_txt_pos"
+KEY_ENCODING = "encoding"
+LAST_READ_DATE = "last_read_date"
 
 
 class TxtServer(Server):
@@ -21,15 +28,12 @@ class TxtServer(Server):
         """
         # 书籍位置
         self.path_file = ""
+        # 编码格式
+        self.ec = ""
         # 阅读进入文件位置
         self.path_read_p = ""
+        self.bd = BookData()
 
-        # 要阅读的，并且分割好的文本list
-        self.txts = []
-        # 当前读到txts的第几个了
-        self.txt_n = 0
-        # 每个 txt_n 对应的在原文中的位置
-        self.p2s = []
         super().__init__("txt")
 
     async def initialize(self):
@@ -39,30 +43,34 @@ class TxtServer(Server):
 
         self.path_file = self.conf[PATH_FILE]
         print(f"文件位置：{self.path_file}")
-        os.makedirs(f"{PATH_CONFIG_DIR}/txts/", True)
+        os.makedirs(f"{PATH_CONFIG_DIR}/txts/", exist_ok=True)
 
         if not os.path.exists(self.path_file):
-            self.txts, self.p2s, self.txt_n = ["请检查设置的文件路径是否正确"], [0], 0
+            self.bd.update_chap_txts("请检查设置的文件路径是否正确", 0)
             return "路径错误，文件不存在"
 
         file_ = pathlib.Path(self.path_file)
         self.book_name = file_.stem
 
         if file_.suffix != ".txt":
-            self.txts, self.p2s, self.txt_n = ["请检查设置的文件后缀名"], [0], 0
+            self.bd.update_chap_txts("请检查设置的文件后缀名", 0)
             return f"此方式只支持txt文件，而不是{file_.suffix}"
 
         md5 = cal_file_md5(self.path_file)
         self.path_read_p = f"{PATH_CONFIG_DIR}/txts/{md5}.json"
 
-        pos = self._get_read_progress()[KEY_POS]
-        print(f"上次读取的位置：{pos}")
+        rp = self._get_read_progress()
+        self._get_book_encoding(rp)
+        chap_n = rp.get(KEY_CHAP_N, 0)
+        chap_txt_pos = rp.get(KEY_CHAP_TXT_POS, 0)
+        print(f"上次读取的位置：{chap_n}, {chap_txt_pos}")
 
-        with open(self.path_file, "r", encoding="utf-8", errors='ignore') as f:
-            self.txts, self.p2s, self.txt_n = split_text(f.read(), pos)
-        print(len(self.txts), len(self.p2s), self.txt_n)
+        chap_names, chap_p2s, chap_content = parse_volumes_and_chapters(
+            self._get_book_content(), chap_n)
+        self.bd.set_chap_names(chap_names, chap_n, chap_p2s=chap_p2s)
 
-        return self.book_name
+        self.bd.update_chap_txts(chap_content, chap_txt_pos)
+        return self.book_name + " " + self.bd.get_chap_name()
 
     async def next(self):
         """下一步
@@ -70,20 +78,27 @@ class TxtServer(Server):
         Returns:
             str: 需要转音频的文本
         """
-        print(f"当前位置：{self.txt_n}")
-        txt = self.txts[self.txt_n]
+        print(f"当前位置：{self.bd.chap_txt_n}/{len(self.bd.chap_txts)}")
+
+        if self.bd.is_chap_end():
+            self.bd.chap_n += 1
+
+            self.bd.update_chap_txts(
+                self.bd.get_chap_content(self._get_book_content()))
+            return self.bd.get_chap_name()
+
+        txt = self.bd.chap_txts[self.bd.chap_txt_n]
         self._save_read_progress()
+        self.bd.chap_txt_n += 1
 
-        if self.txt_n >= len(self.txts):
-            return "已经读完了"
-
-        self.txt_n += 1
         return txt
 
     def _get_read_progress(self):
         """读取阅读进度
         """
-        data_default = {PATH_FILE: self.path_file, KEY_POS: 0}
+        data_default = {PATH_FILE: self.path_file,
+                        KEY_CHAP_N: 0,
+                        KEY_CHAP_TXT_POS: 0}
         data = get_data(self.path_read_p, data_default)
         if data[PATH_FILE] != self.path_file:
             print(f"文件位置不一致：{data[PATH_FILE]} -> {self.path_file}")
@@ -103,7 +118,29 @@ class TxtServer(Server):
         # 构建请求数据
         data = {
             PATH_FILE: self.path_file,
-            KEY_POS: self.p2s[self.txt_n],
+            KEY_CHAP_N: self.bd.chap_n,
+            KEY_CHAP_TXT_POS: self.bd.get_chap_txt_pos(),
+            KEY_ENCODING: self.ec,
+            LAST_READ_DATE: datetime.now().isoformat(),
         }
-
         save_data(self.path_read_p, data)
+
+    def _get_book_encoding(self, rp):
+        self.ec = detect_encoding(self.path_file)
+        if self.ec is None:
+            self.ec = self.conf["encoding"]
+            if len(self.ec) == 0:
+                if KEY_ENCODING not in rp:
+                    self.ec = "utf-8"
+                self.ec = rp[KEY_ENCODING]
+
+    def _get_book_content(self):
+        file_content = ""
+        try:
+            with open(self.path_file, "r", encoding=self.ec) as f:
+                file_content = f.read()
+        except (UnicodeDecodeError, UnicodeError):
+            with open(self.path_file, "r", encoding=self.ec, errors='ignore') as f:
+                file_content = f.read()
+            return f"{self.book_name}，txt文件使用{self.ec}解码可能出现错误，请修改配置中解码方法，或核对txt文件"
+        return file_content

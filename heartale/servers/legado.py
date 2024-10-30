@@ -5,8 +5,8 @@ import time
 
 import aiohttp
 
-from heartale.servers import Server
-from heartale.tools import data2url, split_text
+from heartale.servers import BookData, Server
+from heartale.tools import data2url
 
 # 常量定义
 CHAP_POS = "durChapterPos"
@@ -49,38 +49,22 @@ class LegadoServer(Server):
             conf (dict): 配置 conf["legado"]
         """
         # 书籍信息
-        self.book_data = {
-            # 当前读到txts的第几个了
-            CHAP_TXT_N: 0,
-            # 章节序号，按照self.cls计算的
-            CHAP_INDEX: 0,
-            # 位置
-            CHAP_POS: 0,
-        }
-        # 章节名字
-        self.cls = None
-        # 现在的章节是第几个，前面的目录不要
-        self.chap_n0 = 0
-        # 要阅读的，并且分割好的文本list
-        self.txts = []
-        # 每个 txt_n 对应的在原文中的位置
-        self.p2s = []
+        self.book_data = {}
+        self.bd = BookData()
+
         super().__init__("legado")
 
     async def initialize(self):
 
-        self.book_data = await self.get_book_shelf(0)
-        self.book_data[CHAP_TXT_N] = 0
-        self.cls = await self.get_chapter_list(self.book_data)
-        self.chap_n0 = self.book_data[CHAP_INDEX]
-        self.cls = self.cls[self.chap_n0:]
+        self.book_data = await self._get_book_shelf(0)
         self.book_name = self.book_data["name"]
 
-        # 只取之后的章节名字，最多100章
-        if len(self.cls) > 100:
-            self.cls = self.cls[:100]
+        self.bd.set_chap_names(await self._get_chapter_list(self.book_data),
+                               self.book_data[CHAP_INDEX])
+        self.bd.update_chap_txts(await self._get_book_txt(self.book_data),
+                                 self.book_data[CHAP_POS])
 
-        return self.book_name
+        return self.book_name + " " + self.bd.get_chap_name()
 
     async def next(self):
         """下一步
@@ -88,28 +72,25 @@ class LegadoServer(Server):
         Returns:
             _type_: _description_
         """
+        if self.bd.is_chap_end():
+            self.bd.chap_n += 1
+            s = self.bd.get_chap_name()
 
-        if self.book_data[CHAP_TXT_N] == len(self.txts):
-            # 第一个是标题
-            if len(self.txts) > 1:
-                self.book_data[CHAP_TXT_N] = 0
-                self.book_data[CHAP_POS] = 0
-                self.book_data[CHAP_INDEX] += 1
-                self.book_data[CHAP_TITLE] = self.cls[self.book_data[CHAP_INDEX]-self.chap_n0]
+            self.book_data[CHAP_POS] = 0
+            self.book_data[CHAP_INDEX] = self.bd.chap_n
+            self.book_data[CHAP_TITLE] = s
 
-            book_txt = await self.get_book_txt(self.book_data)
-            self.txts, self.p2s, self.book_data[CHAP_TXT_N] = split_text(
-                book_txt, self.book_data[CHAP_POS])
+            self.bd.update_chap_txts(await self._get_book_txt(self.book_data))
 
-            return self.cls[self.book_data[CHAP_INDEX]-self.chap_n0]
+            return s
 
-        txt = self.txts[self.book_data[CHAP_TXT_N]]
-        self.book_data[CHAP_POS] = self.p2s[self.book_data[CHAP_TXT_N]]
-        await self.save_book_progress(self.book_data)
-        self.book_data[CHAP_TXT_N] += 1
+        txt = self.bd.chap_txts[self.bd.chap_txt_n]
+        await self._save_book_progress(self.book_data)
+        self.bd.chap_txt_n += 1
+
         return txt
 
-    async def get_book_shelf(self, book_n: int):
+    async def _get_book_shelf(self, book_n: int):
         """异步获取书架信息
 
         Args:
@@ -126,7 +107,7 @@ class LegadoServer(Server):
 
         return resp_json["data"][book_n]
 
-    async def get_chapter_list(self, book_data: dict):
+    async def _get_chapter_list(self, book_data: dict):
         """异步获取书章节目录
 
         Args:
@@ -143,7 +124,7 @@ class LegadoServer(Server):
 
         return [d["title"] for d in resp_json["data"]]
 
-    async def get_book_txt(self, book_data: dict):
+    async def _get_book_txt(self, book_data: dict):
         """异步获取书某一章节的文本
 
         Args:
@@ -161,7 +142,7 @@ class LegadoServer(Server):
 
         return resp_json["data"]
 
-    async def save_book_progress(self, book_data: dict):
+    async def _save_book_progress(self, book_data: dict):
         """异步保存阅读进度
 
         Args:
@@ -175,12 +156,12 @@ class LegadoServer(Server):
 
         # 构建请求数据
         data = {
-            "name": book_data["name"],
+            "name": self.book_name,
             "author": book_data["author"],
-            CHAP_INDEX: book_data[CHAP_INDEX],
-            CHAP_POS: book_data[CHAP_POS],
+            CHAP_INDEX: self.bd.chap_n,
+            CHAP_POS: self.bd.get_chap_txt_pos(),
             "durChapterTime": dct,
-            CHAP_TITLE: book_data[CHAP_TITLE],
+            CHAP_TITLE: self.bd.get_chap_name(),
         }
 
         json_data = json.dumps(data)
