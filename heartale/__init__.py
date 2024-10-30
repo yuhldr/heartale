@@ -101,11 +101,12 @@ async def play(chap=1000, play_min=100):
 
     # 下载和播放章节
     text = await server.initialize()
-    mp3_file = f'{get_cache_mp3(f"{time.time()}")}.mp3'
+    mp3_file = f'{get_cache_mp3(f"{time.time()}")}.wav'
     await tts.download(text, mp3_file)
 
     # 默认听100章节，自动停止
     for _i in range(chap):
+        print("\n\n")
         # 默认播放100分钟，一段结束再停止
         if sum(read_time_data["time"]) > play_min * 60:
             print(f'阅读{(sum(read_time_data["time"]))/60} > {play_min}分钟')
@@ -122,7 +123,7 @@ async def play(chap=1000, play_min=100):
         text = await server.next()
         print_test(_i, chap, text, mp3_file)
 
-        mp3_file = f'{get_cache_mp3(f"{time.time()}")}.mp3'
+        mp3_file = f'{get_cache_mp3(f"{time.time()}")}.wav'
         task_download = tts.download(text, mp3_file)
 
         await asyncio.gather(task_play, task_download)
