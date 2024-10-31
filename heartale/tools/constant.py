@@ -3,6 +3,7 @@ from heartale.servers.legado import LegadoServer
 from heartale.servers.txt import TxtServer
 from heartale.tts.coqui import CoquiTTS
 from heartale.tts.edge import EdgeTTS
+from heartale.tts.fish import FishTTS
 from heartale.tts.g_tts import GTTS
 from heartale.tts.ms_azure import AzureTTS
 from heartale.tts.paddle_speech import PaddleSpeechTTS
@@ -33,5 +34,6 @@ def get_ttses():
         AzureTTS(),
         GTTS(),
         CoquiTTS(),
-        PaddleSpeechTTS()
+        PaddleSpeechTTS(),
+        FishTTS()
     ]

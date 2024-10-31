@@ -54,7 +54,11 @@ DEFAULT_CONFIG = {
             "coqui": {
                 "model": "tts_models/zh-CN/baker/tacotron2-DDC-GST"
             },
-            "paddlespeech":{},
+            "paddlespeech": {},
+            "fish": {
+                "url_tts": "http://127.0.0.1:8080/v1/tts",
+                "audio_text": {}
+            }
         }
     }
 }
