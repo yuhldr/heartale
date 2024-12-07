@@ -88,7 +88,9 @@ class TxtServer(Server):
             return self.bd.get_chap_name()
 
         txt = self.bd.chap_txts[self.bd.chap_txt_n]
-        self._save_read_progress()
+        # 一些异常
+        if len(self.bd.chap_txts) > 1:
+            self._save_read_progress()
         self.bd.chap_txt_n += 1
 
         return txt
