@@ -160,7 +160,7 @@ def parse_volumes_and_chapters(file_content, chap_n):
 
     # 匹配 "第xx卷" 和 "第xx章"
     volume_pattern = r'^第([一二三四五六七八九十\d]+)卷\s*(.*)'  # 匹配卷号
-    chapter_pattern = r'^第(\d+)章\s*(.*)'  # 匹配章号
+    chapter_pattern = r'^第([一二三四五六七八九十百千\d]+)章\s*(.*)'  # 匹配章号
 
     current_volume = None
     chap_names = []
@@ -181,9 +181,12 @@ def parse_volumes_and_chapters(file_content, chap_n):
 
         # 匹配章号
         chapter_match = re.search(chapter_pattern, line)
-        if chapter_match and current_volume:
+        if chapter_match:
             current_chapter = chapter_match.group()
-            chap_names.append(f"{current_volume} {current_chapter}")
+            if current_volume:
+                chap_names.append(f"{current_volume} {current_chapter}")
+            else:
+                chap_names.append(f"{current_chapter}")
             p2s.append(words)
 
         if len(p2s) == chap_n:
