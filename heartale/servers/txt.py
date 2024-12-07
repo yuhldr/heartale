@@ -67,6 +67,8 @@ class TxtServer(Server):
 
         chap_names, chap_p2s, chap_content = parse_volumes_and_chapters(
             self._get_book_content(), chap_n)
+        if chap_n == 0:
+            chap_content = self._get_book_content()
         self.bd.set_chap_names(chap_names, chap_n, chap_p2s=chap_p2s)
 
         self.bd.update_chap_txts(chap_content, chap_txt_pos)
