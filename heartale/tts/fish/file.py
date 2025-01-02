@@ -1,6 +1,6 @@
 'fish-speech内置'
 from pathlib import Path
-from typing import Union
+from typing import List, Set, Tuple, Union
 
 from loguru import logger
 from natsort import natsorted
@@ -58,9 +58,9 @@ def read_ref_text(ref_text):
 
 def list_files(
     path: Union[Path, str],
-    extensions: set[str] = None,
+    extensions: Set[str] = None,
     sort: bool = True,
-) -> list[Path]:
+) -> List[Path]:
     """List files in a directory.
 
     Args:
@@ -87,12 +87,12 @@ def list_files(
     return files
 
 
-def load_filelist(path: Path | str) -> list[tuple[Path, str, str, str]]:
+def load_filelist(path: Union[Path, str]) -> List[Tuple[Path, str, str, str]]:
     """
     Load a Bert-VITS2 style filelist.
     """
 
-    files = set()
+    files = Set()
     results = []
     count_duplicated, count_not_found = 0, 0
 
@@ -116,7 +116,8 @@ def load_filelist(path: Path | str) -> list[tuple[Path, str, str, str]]:
             if language == "ja":
                 language = "jp"
 
-            assert language in ["zh", "jp", "en"], f"Invalid language {language}"
+            assert language in ["zh", "jp",
+                                "en"], f"Invalid language {language}"
             languages = language_to_languages[language]
 
             if file in files:

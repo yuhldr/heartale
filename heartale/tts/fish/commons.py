@@ -1,7 +1,7 @@
 'fish-speech内置'
-from typing import Annotated, Literal, Optional
+from typing import List, Literal, Optional
 
-from pydantic import BaseModel, Field, conint
+from pydantic import BaseModel
 
 
 class ServeReferenceAudio(BaseModel):
@@ -24,7 +24,6 @@ class ServeReferenceAudio(BaseModel):
         print("xx")
 
 
-
 class ServeTTSRequest(BaseModel):
     """_summary_
 
@@ -32,17 +31,18 @@ class ServeTTSRequest(BaseModel):
         BaseModel (_type_): _description_
     """
     text: str
-    chunk_length: Annotated[int, conint(ge=100, le=300, strict=True)] = 200
+    # Annotated[int, conint(ge=100, le=300, strict=True)]
+    chunk_length: int = 200
     # Audio format
     format: Literal["wav", "pcm", "mp3"] = "wav"
     mp3_bitrate: Literal[64, 128, 192] = 128
     # References audios for in-context learning
-    references: list[ServeReferenceAudio] = []
+    references: List[ServeReferenceAudio] = []
     # Reference id
     # For example, if you want use https://fish.audio/m/7f92f8afb8ec43bf81429cc1c9199cb1/
     # Just pass 7f92f8afb8ec43bf81429cc1c9199cb1
-    reference_id: str | None = None
-    seed: int | None = None
+    reference_id: str = None
+    seed: int = None
     use_memory_cache: Literal["on-demand", "never"] = "never"
     # Normalize text for en & zh, this increase stability for numbers
     normalize: bool = True
@@ -53,9 +53,12 @@ class ServeTTSRequest(BaseModel):
     # not usually used below
     streaming: bool = False
     max_new_tokens: int = 1024
-    top_p: Annotated[float, Field(ge=0.1, le=1.0, strict=True)] = 0.7
-    repetition_penalty: Annotated[float, Field(ge=0.9, le=2.0, strict=True)] = 1.2
-    temperature: Annotated[float, Field(ge=0.1, le=1.0, strict=True)] = 0.7
+    # Annotated[float, Field(ge=0.1, le=1.0, strict=True)]
+    top_p: float = 0.7
+    # Annotated[float, Field(ge=0.9, le=2.0, strict=True)]
+    repetition_penalty: float = 1.2
+    # Annotated[float, Field(ge=0.1, le=1.0, strict=True)]
+    temperature: float = 0.7
 
     def test(self):
         """_summary_
