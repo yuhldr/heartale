@@ -12,6 +12,7 @@ class EdgeTTS(TTS):
     def __init__(self):
         self.com = None
         self.proxy = None
+        self.err = None
         super().__init__("edge")
 
     def set_conf(self, conf, py_libs=None):
@@ -22,9 +23,14 @@ class EdgeTTS(TTS):
 
         import edge_tts  # pylint: disable=C0415
         self.com = edge_tts.Communicate
+        self.err = edge_tts.exceptions
 
     async def download(self, text, file):
-        print(self.proxy)
-        await self.com(text, self.conf["voice"],
-                       rate=self.conf["rate"],
-                       proxy=self.proxy).save(file)
+        try:
+            await self.com(text, self.conf["voice"],
+                           rate=self.conf["rate"],
+                           proxy=self.proxy).save(file)
+        except self.err.NoAudioReceived as e:
+            print(f"下载失败：{text}\n{str(e)}")
+            await self.download(f"文本空，{self.key} 跳过一次", file)
+            return None
