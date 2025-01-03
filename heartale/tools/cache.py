@@ -1,19 +1,20 @@
 '''配置'''
 
 import os
+import sys
 import shutil
 
 
-def get_cache_path():
-    """_summary_
-
-    Returns:
-        _type_: _description_
-    """
-    return os.getenv("HOME") + "/.cache/bpy/"
-
-
-os.makedirs(get_cache_path(), exist_ok=True)
+if sys.platform.startswith('win'):
+    ld = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
+    PATH_CACHE_DIR = os.path.join(ld, "heartale")
+else:
+    xdg_cache_home = os.getenv('XDG_CACHE_HOME')
+    if xdg_cache_home is None:
+        home = os.path.expanduser("~")
+        xdg_cache_home = os.path.join(home, '.cache')
+    PATH_CACHE_DIR = os.path.join(xdg_cache_home, "heartale")
+os.makedirs(PATH_CACHE_DIR, exist_ok=True)
 
 
 def get_cache_mp3(file):
@@ -25,7 +26,7 @@ def get_cache_mp3(file):
     Returns:
         _type_: _description_
     """
-    return f"{get_cache_path()}/mp3/{file}"
+    return f"{PATH_CACHE_DIR}/mp3/{file}"
 
 
 os.makedirs(get_cache_mp3(""), exist_ok=True)

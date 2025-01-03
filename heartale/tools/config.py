@@ -1,11 +1,15 @@
 """配置"""
 import os
+import sys
 
 from heartale.tools import get_data, save_data
 
-PATH_CONFIG_DIR = f'{os.getenv("HOME")}/.config/heartale/'
+if sys.platform.startswith('win'):
+    PATH_CONFIG_DIR = os.path.join(os.getenv("APPDATA"), "heartale")
+else:
+    PATH_CONFIG_DIR = os.path.join(os.getenv("HOME"), ".config", "heartale")
 os.makedirs(PATH_CONFIG_DIR, exist_ok=True)
-
+print("config", PATH_CONFIG_DIR)
 PATH_CONFIG = f'{PATH_CONFIG_DIR}/config.json'
 
 CONFIG_DATA = None

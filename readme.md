@@ -22,7 +22,7 @@
 
 1. [这里](https://github.com/yuhldr/heartale/releases/tag/beta)下载并安装 `heartale*.whl`
 
-   非 linux 系统可能需要设置播放程序，看最后详细说明
+   非 linux 系统可能需要设置播放程序，安装ffmpeg即可，看最后详细说明
 
 2. 测试是否修改成功
 
@@ -221,7 +221,7 @@ heartale
 
 ## 贡献说明
 
-请保证严格遵守 `pylint`
+请保证严格遵守 `pylint` （至少python3.8）
 
 ```bash
 pylint $(git ls-files '*.py')
@@ -230,4 +230,4 @@ pylint $(git ls-files '*.py')
 ## 后续开发说明
 
 - 大概会做 ui
-- 大概会做朗读本地 pdf、txt 等格式文本
+- 大概会做朗读本地 pdf、txt(已支持) 等格式文本
