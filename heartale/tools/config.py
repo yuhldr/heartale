@@ -25,7 +25,7 @@ DEFAULT_CONFIG = {
             "port": "1122"
         },
         "txt": {
-            "path_file": "/tmp/test.txt",
+            "path_file": "",
             "encoding": ""
         }
     },
