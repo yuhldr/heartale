@@ -21,12 +21,8 @@ class CoquiTTS(HTS):
 
     def set_conf(self, conf, py_libs=None):
         super().set_conf(conf, ["torch", "TTS"])
-        import torch  # pylint: disable=C0415
         from TTS.api import TTS  # pylint: disable=C0415
-
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"Using {device} for TTS")
-        self.tts = TTS(self.conf["model"]).to(device)
+        self.tts = TTS(self.conf["model"]).to(self.conf["device"])
 
     async def download(self, text, file):
 
@@ -34,5 +30,6 @@ class CoquiTTS(HTS):
         text = re.sub(r'[…？！\n]', '。', text)
         if text[-1] != "。":
             text += "。"
-
+        if self.tts is None:
+            raise ValueError("初始化错误")
         self.tts.tts_to_file(text=text, file_path=file)

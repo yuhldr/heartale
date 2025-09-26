@@ -5,9 +5,10 @@ import sys
 from heartale.tools import get_data, save_data
 
 if sys.platform.startswith('win'):
-    PATH_CONFIG_DIR = os.path.join(os.getenv("APPDATA"), "heartale")
+    PATH_CONFIG_DIR = os.path.join(os.getenv("APPDATA", ""), "heartale")
 else:
-    PATH_CONFIG_DIR = os.path.join(os.getenv("HOME"), ".config", "heartale")
+    PATH_CONFIG_DIR = os.path.join(
+        os.getenv("HOME", ""), ".config", "heartale")
 os.makedirs(PATH_CONFIG_DIR, exist_ok=True)
 print("config", PATH_CONFIG_DIR)
 PATH_CONFIG = f'{PATH_CONFIG_DIR}/config.json'
@@ -56,7 +57,8 @@ DEFAULT_CONFIG = {
                 "language": "zh-CN"
             },
             "coqui": {
-                "model": "tts_models/zh-CN/baker/tacotron2-DDC-GST"
+                "model": "tts_models/zh-CN/baker/tacotron2-DDC-GST",
+                "device": "cpu"
             },
             "paddlespeech": {},
             "fish": {
