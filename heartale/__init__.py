@@ -10,7 +10,7 @@ from heartale.tools.config import (get_config, get_config_server,
                                    get_config_tts_download)
 from heartale.tools.constant import get_servers, get_ttses
 from heartale.tools.count import save_read_time
-from heartale.tts import TTS, play_mp3
+from heartale.tts import HTS, play_mp3
 
 
 def get_server(conf_all) -> Server:
@@ -33,7 +33,7 @@ def get_server(conf_all) -> Server:
     return None
 
 
-def get_tts(conf_all) -> TTS:
+def get_tts(conf_all) -> HTS:
     """获取tts服务
 
     Args:
@@ -50,8 +50,7 @@ def get_tts(conf_all) -> TTS:
             tts.set_conf(conf_tts)
             return tts
 
-    print(f"未知的服务 {key}")
-    return None
+    raise ValueError(f"未知的服务 {key}")
 
 
 def print_test(i, chap, text, file):
@@ -67,8 +66,9 @@ def print_test(i, chap, text, file):
     print(file)
     if len(text) > 20:
         print(f"{text[:20]} ... {len(text)}")
-    else:
-        print(text[:20])
+        return
+
+    print(text[:20])
 
 
 async def play(chap=1000, play_min=100):

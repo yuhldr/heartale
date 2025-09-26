@@ -2,10 +2,10 @@
 
 
 from heartale.tools import get_proxy_url
-from heartale.tts import TTS
+from heartale.tts import HTS
 
 
-class EdgeTTS(TTS):
+class EdgeTTS(HTS):
     """获取待阅读文本的基础类
     """
 

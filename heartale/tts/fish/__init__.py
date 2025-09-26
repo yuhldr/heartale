@@ -1,9 +1,9 @@
 """fish speech"""
 
-from heartale.tts import TTS
+from heartale.tts import HTS
 
 
-class FishTTS(TTS):
+class FishTTS(HTS):
     """获取待阅读文本的基础类
     """
 

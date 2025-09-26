@@ -3,10 +3,10 @@
 
 import re
 
-from heartale.tts import TTS
+from heartale.tts import HTS
 
 
-class CoquiTTS(TTS):
+class CoquiTTS(HTS):
     """获取待阅读文本的基础类
     """
 
@@ -22,11 +22,11 @@ class CoquiTTS(TTS):
     def set_conf(self, conf, py_libs=None):
         super().set_conf(conf, ["torch", "TTS"])
         import torch  # pylint: disable=C0415
-        from TTS.api import TTS as Ctts  # pylint: disable=C0415
+        from TTS.api import TTS  # pylint: disable=C0415
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"Using {device} for TTS")
-        self.tts = Ctts(self.conf["model"]).to(device)
+        self.tts = TTS(self.conf["model"]).to(device)
 
     async def download(self, text, file):
 

@@ -1,10 +1,10 @@
 """不推荐，很机器人"""
 
 
-from heartale.tts import TTS
+from heartale.tts import HTS
 
 
-class GTTS(TTS):
+class GTTS(HTS):
     """获取待阅读文本的基础类
     """
 

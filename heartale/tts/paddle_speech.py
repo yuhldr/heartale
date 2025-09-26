@@ -1,10 +1,10 @@
 """文本转语音文件"""
 
 
-from heartale.tts import TTS
+from heartale.tts import HTS
 
 
-class PaddleSpeechTTS(TTS):
+class PaddleSpeechTTS(HTS):
     """获取待阅读文本的基础类
     """
 

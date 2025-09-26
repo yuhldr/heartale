@@ -7,7 +7,7 @@ from heartale.tools import check_library_installed
 from heartale.tools.config import get_config_tts_play
 
 
-class TTS:
+class HTS:
     """获取待阅读文本的基础类
     """
 
@@ -19,7 +19,7 @@ class TTS:
         """
 
         self.key = key
-        self.conf = None
+        self.conf = {}
 
     def set_conf(self, conf, py_libs=None):
         """设置配置信息，并可以初始化一些服务，比如import第三方库，防止未使用的TTS导致内存占用过大
