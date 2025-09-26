@@ -20,4 +20,6 @@ class GTTS(HTS):
         self.gtts = gTTS
 
     async def download(self, text, file):
+        if self.gtts is None:
+            raise ValueError("初始化错误")
         self.gtts(text, lang=self.conf["language"]).save(file)

@@ -1,12 +1,11 @@
 '''配置'''
 
 import os
-import sys
 import shutil
-
+import sys
 
 if sys.platform.startswith('win'):
-    ld = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
+    ld = os.getenv('LOCALAPPDATA', "") or os.getenv('APPDATA', "")
     PATH_CACHE_DIR = os.path.join(ld, "heartale")
 else:
     xdg_cache_home = os.getenv('XDG_CACHE_HOME')

@@ -30,6 +30,8 @@ class AzureTTS(HTS):
         self.sc = speechsdk.SpeechConfig(self.conf["key"], self.conf["region"])
 
     async def download(self, text, file):
+        if self.ss is None or self.sc is None or self.aoc is None or self.rs is None:
+            raise ValueError("初始化错误")
         ssml_text = f"""
         <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
             xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="{self.conf['language']}">

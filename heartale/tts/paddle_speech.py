@@ -19,4 +19,6 @@ class PaddleSpeechTTS(HTS):
         self.tts = TTSExecutor()
 
     async def download(self, text, file):
+        if self.tts is None:
+            raise ValueError("初始化错误")
         self.tts(text=text, output=file)

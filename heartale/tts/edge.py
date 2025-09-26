@@ -26,6 +26,8 @@ class EdgeTTS(HTS):
         self.err = edge_tts.exceptions
 
     async def download(self, text, file):
+        if self.com is None or self.err is None:
+            raise ValueError("初始化错误")
         try:
             await self.com(text, self.conf["voice"],
                            rate=self.conf["rate"],

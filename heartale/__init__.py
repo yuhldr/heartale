@@ -30,7 +30,7 @@ def get_server(conf_all) -> Server:
             return s
 
     print(f"未知的服务 {key}")
-    return None
+    raise ValueError(f"未知的文本服务 {key}")
 
 
 def get_tts(conf_all) -> HTS:
@@ -50,7 +50,7 @@ def get_tts(conf_all) -> HTS:
             tts.set_conf(conf_tts)
             return tts
 
-    raise ValueError(f"未知的服务 {key}")
+    raise ValueError(f"未知的TTS服务 {key}")
 
 
 def print_test(i, chap, text, file):

@@ -13,6 +13,7 @@ CHAP_POS = "durChapterPos"
 CHAP_INDEX = "durChapterIndex"
 CHAP_TITLE = "durChapterTitle"
 CHAP_TXT_N = "durChapterTxtN"
+TIMEOUT = aiohttp.ClientTimeout(total=10)
 
 
 def get_base_url(conf):
@@ -102,7 +103,7 @@ class LegadoServer(Server):
         url = f"{get_base_url(self.conf)}/getBookshelf"
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, timeout=10) as response:
+            async with session.get(url, timeout=TIMEOUT) as response:
                 resp_json = await response.json(content_type=None)
 
         return resp_json["data"][book_n]
@@ -119,7 +120,7 @@ class LegadoServer(Server):
         url = f"{get_base_url(self.conf)}/getChapterList?{bu(book_data)}"
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, timeout=10) as response:
+            async with session.get(url, timeout=TIMEOUT) as response:
                 resp_json = await response.json(content_type=None)
 
         return [d["title"] for d in resp_json["data"]]
@@ -137,7 +138,7 @@ class LegadoServer(Server):
         params = f"{bu(book_data)}&index={book_data[CHAP_INDEX]}"
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"{url}?{params}", timeout=10) as response:
+            async with session.get(f"{url}?{params}", timeout=TIMEOUT) as response:
                 resp_json = await response.json(content_type=None)
 
         return resp_json["data"]
@@ -171,7 +172,7 @@ class LegadoServer(Server):
             async with session.post(f"{get_base_url(self.conf)}/saveBookProgress",
                                     data=json_data,
                                     headers=headers,
-                                    timeout=10) as response:
+                                    timeout=TIMEOUT) as response:
                 resp_json = await response.json(content_type=None)
 
                 if not resp_json["isSuccess"]:

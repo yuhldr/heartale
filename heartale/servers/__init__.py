@@ -66,7 +66,7 @@ class BookData():
             str: self.chap_n章节的内容
         """
         if self.chap_p2s is None:
-            print("未设置")
+            raise ValueError("未设置章节位置")
         n = self.chap_n - self.chap_n0
         return book_content[self.chap_p2s[n]:self.chap_p2s[n+1]]
 
@@ -103,7 +103,7 @@ class Server:
         self.key = key
         # 书名
         self.book_name = ""
-        self.conf = None
+        self.conf = {}
 
     def set_conf(self, conf):
         """设置配置信息"""

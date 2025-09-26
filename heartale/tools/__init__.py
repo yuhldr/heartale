@@ -4,7 +4,7 @@ import json
 import os
 import re
 import time
-import urllib
+from urllib.parse import quote
 
 
 def split_text(text_all, dcp=0):
@@ -55,7 +55,7 @@ def data2url(url):
     Returns:
         str: 编码以后的图书信息url
     """
-    return urllib.parse.quote(url)
+    return quote(url)
 
 
 def cal_file_md5(file_path, chunk_size=8192):
